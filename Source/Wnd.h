@@ -139,7 +139,7 @@ public:
         MoveWindow(this->hwnd, x, y, rect.right - rect.left, rect.bottom - rect.top, repaint ? TRUE : FALSE);
     }
 
-    void Resize(int w, int h, bool repaint = false)
+    void Resize(int w, int h, bool repaint = true)
     {
         auto rect = this->WindowRect();
         auto parent = this->Parent();
@@ -153,7 +153,7 @@ public:
         }
         MoveWindow(this->hwnd, this->X(), this->Y(), w, h, repaint ? TRUE : FALSE);
     }
-    void ResizeClient(int w, int h, bool repaint = false)
+    void ResizeClient(int w, int h, bool repaint = true)
     {
         auto wrect = this->WindowRect();
         auto crect = this->ClientRect();
