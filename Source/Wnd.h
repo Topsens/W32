@@ -107,12 +107,39 @@ public:
         return rect.bottom - rect.top;
     }
 
+    bool Center(bool repaint = false)
+    {
+        RECT rect = {0};
+
+        if (WS_POPUP & this->Style())
+        {
+            GetWindowRect(this->Owner(), &rect);
+        }
+        else if(this->Parent())
+        {
+            GetClientRect(this->Parent(), &rect);
+        }
+        else
+        {
+            MONITORINFO mi = {0};
+            mi.cbSize = sizeof(mi);
+            GetMonitorInfoW(MonitorFromWindow(*this, MONITOR_DEFAULTTONEAREST), &mi);
+            rect = mi.rcWork;
+        }
+
+        auto x = (rect.right - rect.left - this->Width())  / 2 + rect.left;
+        auto y = (rect.bottom - rect.top - this->Height()) / 2 + rect.top;
+        this->MoveTo(x, y, repaint);
+
+        return true;
+    }
     void MoveTo(int x, int y, bool repaint = false)
     {
         auto rect = this->WindowRect();
         MoveWindow(this->hwnd, x, y, rect.right - rect.left, rect.bottom - rect.top, repaint ? TRUE : FALSE);
     }
-    void Resize(int w, int h, bool repaint = true)
+
+    void Resize(int w, int h, bool repaint = false)
     {
         auto rect = this->WindowRect();
         auto parent = this->Parent();
@@ -126,7 +153,7 @@ public:
         }
         MoveWindow(this->hwnd, this->X(), this->Y(), w, h, repaint ? TRUE : FALSE);
     }
-    void ResizeClient(int w, int h, bool repaint = true)
+    void ResizeClient(int w, int h, bool repaint = false)
     {
         auto wrect = this->WindowRect();
         auto crect = this->ClientRect();

@@ -82,35 +82,6 @@ public:
         return this->GetProp(PropModal()) ? true : false;
     }
 
-    void Center(HWND hwnd = nullptr)
-    {
-        hwnd = hwnd ? hwnd : (HWND)this->Parent();
-        if (!hwnd || !this->hwnd || !this->Parent())
-        {
-            return;
-        }
-
-        RECT wrect, drect;
-        GetWindowRect(hwnd, &wrect);
-        GetWindowRect(this->hwnd, &drect);
-
-        auto ww = wrect.right - wrect.left;
-        auto wh = wrect.bottom - wrect.top;
-        auto dw = drect.right - drect.left;
-        auto dh = drect.bottom - drect.top;
-
-        auto x = (ww - dw) / 2 + wrect.left;
-        auto y = (wh - dh) / 2 + wrect.top;
-
-        RECT prect = {0};
-        if (!(WS_POPUP & this->Style()))
-        {
-            GetWindowRect(this->Parent(), &prect);
-        }
-
-        this->MoveTo(x - prect.left, y - prect.top);
-    }
-
     Control Item(int dlgItemId) const
     {
         return Control(GetDlgItem(this->hwnd, dlgItemId));
