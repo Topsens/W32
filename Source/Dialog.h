@@ -35,6 +35,31 @@ public:
         return !!this->hwnd;
     }
 
+    void RegisterMessage(UINT message, const std::function<Result()>& handler)
+    {
+        this->messages[message] = std::make_pair(false, handler);
+    }
+    void RegisterCommand(WORD command, const std::function<bool()>& handler)
+    {
+        this->commands[command] = std::make_pair(false, handler);
+    }
+    void RemoveMessage(UINT message)
+    {
+        auto it = this->messages.find(message);
+        if (it != this->messages.end())
+        {
+            this->messages.erase(it);
+        }
+    }
+    void RemoveCommand(WORD command)
+    {
+        auto it = this->commands.find(command);
+        if (it != this->commands.end())
+        {
+            this->commands.erase(it);
+        }
+    }
+
     // DS_MODALFRAME | WS_CAPTION | WS_POPUP | WS_SYSMENU can be used as default style in .rc for modal dialog
     int  DoModal(HACCEL accelerator = nullptr)
     {
@@ -113,31 +138,6 @@ protected:
     }
     virtual void OnSize()
     {
-    }
-
-    void RegisterMessage(UINT message, const std::function<Result()>& handler)
-    {
-        this->messages[message] = std::make_pair(false, handler);
-    }
-    void RegisterCommand(WORD command, const std::function<bool()>& handler)
-    {
-        this->commands[command] = std::make_pair(false, handler);
-    }
-    void RemoveMessage(UINT message)
-    {
-        auto it = this->messages.find(message);
-        if (it != this->messages.end())
-        {
-            this->messages.erase(it);
-        }
-    }
-    void RemoveCommand(WORD command)
-    {
-        auto it = this->commands.find(command);
-        if (it != this->commands.end())
-        {
-            this->commands.erase(it);
-        }
     }
 
     void SetResult(LONG_PTR result)

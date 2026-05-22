@@ -59,6 +59,25 @@ public:
         return !!this->hwnd;
     }
 
+    void RegisterMessage(UINT message, const std::function<LRESULT()>& handler) { this->messages[message] = make_pair(false, handler); }
+    void RegisterCommand(WORD command, const std::function<bool()>& handler) { this->commands[command] = make_pair(false, handler); }
+    void RemoveMessage(UINT message)
+    {
+        auto it = this->messages.find(message);
+        if (it != this->messages.end())
+        {
+            this->messages.erase(it);
+        }
+    }
+    void RemoveCommand(WORD command)
+    {
+        auto it = this->commands.find(command);
+        if (it != this->commands.end())
+        {
+            this->commands.erase(it);
+        }
+    }
+
 protected:
     virtual bool OnCreated()
     {
@@ -89,25 +108,6 @@ protected:
     }
     virtual void OnMove() {}
     virtual void OnSize() {}
-
-    void RegisterMessage(UINT message, const std::function<LRESULT()>& handler) { this->messages[message] = make_pair(false, handler); }
-    void RegisterCommand(WORD command, const std::function<bool()>& handler) { this->commands[command] = make_pair(false, handler); }
-    void RemoveMessage(UINT message)
-    {
-        auto it = this->messages.find(message);
-        if (it != this->messages.end())
-        {
-            this->messages.erase(it);
-        }
-    }
-    void RemoveCommand(WORD command)
-    {
-        auto it = this->commands.find(command);
-        if (it != this->commands.end())
-        {
-            this->commands.erase(it);
-        }
-    }
 
     virtual LRESULT WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
